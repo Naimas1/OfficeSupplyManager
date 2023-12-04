@@ -1,10 +1,229 @@
-<Project Sdk="Microsoft.NET.Sdk">
+using System;
+using System.Data;
+using System.Data.SqlClient;
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+public class OfficeSupplyInfoDisplay
+{
+    private string connectionString;
 
-</Project>
+    public OfficeSupplyInfoDisplay(string connectionString)
+    {
+        this.connectionString = connectionString;
+    }
+
+    public void DisplayAllOfficeSupplies()
+    {
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT * FROM Products";
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(query, connection);
+
+                DataSet dataSet = new DataSet();
+                dataAdapter.Fill(dataSet, "Products");
+
+                DataTable productsTable = dataSet.Tables["Products"];
+
+                Console.WriteLine("Інформація про канцтовари:");
+
+                foreach (DataRow row in productsTable.Rows)
+                {
+                    Console.WriteLine($"ID: {row["ProductID"]}, Назва: {row["ProductName"]}, Тип: {row["ProductType"]}, " +
+                                      $"Кількість: {row["Quantity"]}, Собівартість: {row["Cost"]}, " +
+                                      $"Постачальник: {row["SupplierName"]}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка при виведенні канцтоварів: {ex.Message}");
+        }
+    }
+
+    public void DisplayOfficeSupplyTypes()
+    {
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT DISTINCT ProductType FROM Products";
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(query, connection);
+
+                DataSet dataSet = new DataSet();
+                dataAdapter.Fill(dataSet, "ProductTypes");
+
+                DataTable productTypesTable = dataSet.Tables["ProductTypes"];
+
+                Console.WriteLine("Типи канцтоварів:");
+
+                foreach (DataRow row in productTypesTable.Rows)
+                {
+                    Console.WriteLine($"Тип: {row["ProductType"]}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка при виведенні типів канцтоварів: {ex.Message}");
+        }
+    }
+
+    public void DisplaySalesManagers()
+    {
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT DISTINCT SalesManager FROM Sales";
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(query, connection);
+
+                DataSet dataSet = new DataSet();
+                dataAdapter.Fill(dataSet, "SalesManagers");
+
+                DataTable salesManagersTable = dataSet.Tables["SalesManagers"];
+
+                Console.WriteLine("Менеджери з продажу:");
+
+                foreach (DataRow row in salesManagersTable.Rows)
+                {
+                    Console.WriteLine($"Менеджер: {row["SalesManager"]}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка при виведенні менеджерів з продажу: {ex.Message}");
+        }
+    }
+
+    public void DisplayMaxQuantityOfficeSupplies()
+    {
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT TOP 1 * FROM Products ORDER BY Quantity DESC";
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(query, connection);
+
+                DataSet dataSet = new DataSet();
+                dataAdapter.Fill(dataSet, "MaxQuantityProducts");
+
+                DataTable maxQuantityProductsTable = dataSet.Tables["MaxQuantityProducts"];
+
+                Console.WriteLine("Канцтовари з максимальною кількістю:");
+
+                foreach (DataRow row in maxQuantityProductsTable.Rows)
+                {
+                    Console.WriteLine($"ID: {row["ProductID"]}, Назва: {row["ProductName"]}, " +
+                                      $"Кількість: {row["Quantity"]}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка при виведенні канцтоварів з максимальною кількістю: {ex.Message}");
+        }
+    }
+
+    public void DisplayMinQuantityOfficeSupplies()
+    {
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT TOP 1 * FROM Products ORDER BY Quantity ASC";
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(query, connection);
+
+                DataSet dataSet = new DataSet();
+                dataAdapter.Fill(dataSet, "MinQuantityProducts");
+
+                DataTable minQuantityProductsTable = dataSet.Tables["MinQuantityProducts"];
+
+                Console.WriteLine("Канцтовари з мінімальною кількістю:");
+
+                foreach (DataRow row in minQuantityProductsTable.Rows)
+                {
+                    Console.WriteLine($"ID: {row["ProductID"]}, Назва: {row["ProductName"]}, " +
+                                      $"Кількість: {row["Quantity"]}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка при виведенні канцтоварів з мінімальною кількістю: {ex.Message}");
+        }
+    }
+
+    public void DisplayMinCostOfficeSupplies()
+    {
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT TOP 1 * FROM Products ORDER BY Cost ASC";
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(query, connection);
+
+                DataSet dataSet = new DataSet();
+                dataAdapter.Fill(dataSet, "MinCostProducts");
+
+                DataTable minCostProductsTable = dataSet.Tables["MinCostProducts"];
+
+                Console.WriteLine("Канцтовари з мінімальною собівартістю:");
+
+                foreach (DataRow row in minCostProductsTable.Rows)
+                {
+                    Console.WriteLine($"ID: {row["ProductID"]}, Назва: {row["ProductName"]}, " +
+                                      $"Собівартість: {row["Cost"]}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка при виведенні канцтоварів з мінімальною собівартістю: {ex.Message}");
+        }
+    }
+
+    public void DisplayMaxCostOfficeSupplies()
+    {
+        try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT TOP 1 * FROM Products ORDER BY Cost DESC";
+                SqlDataAdapter dataAdapter = new SqlDataAdapter(query, connection);
+
+                DataSet dataSet = new DataSet();
+                dataAdapter.Fill(dataSet, "MaxCostProducts");
+
+                DataTable maxCostProductsTable = dataSet.Tables["MaxCostProducts"];
+
+                Console.WriteLine("Канцтовари з максимальною собівартістю:");
+
+                foreach (DataRow row in maxCostProductsTable.Rows)
+                {
+                    Console.WriteLine($"ID: {row["ProductID"]}, Назва: {row["ProductName"]}, " +
+                                      $"Собівартість: {row["Cost"]}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка при виведенні канцтоварів з максимальною собівартістю: {ex.Message}");
+        }
+    }
+}
